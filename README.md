@@ -1,20 +1,45 @@
-# CV_MOA
-이력서와 틴더의 결합 프로젝트(배포까지 하는게 목적!)
+# 🤝 Cmoa (Project Name CV_MOA)
+> **Swipe Right for Your Dream Job!** > 구직자와 채용 담당자를 틴더(Tinder) 방식의 UI로 연결하는 신개념 매칭 플랫폼
+**Cmoa**는 딱딱하고 지루한 기존의 채용 프로세스를 벗어나, **직관적인 스와이프(Swipe)** 방식을 통해 구직자와 기업을 연결하는 서비스입니다.
 
-12/22(월)
-내 포트폴리오에 들어갈 내용이 너무 부족하기 때문에 배포까지 한 나만의 프로젝트를 만들어보기로 결정했다.
-왜 취준생들은 기업에 자신을 뽑아달라며 자기 어필을 하는가에서 시작해 이럴거면 인사담당자도 자신의 회사에 와달라는 어필을 할수 있도록
-틴더의 소개팅마냥 만들어보고 배포를 하는게 목표다. 사람들도 들어오면 겸사겸사 안정성 테스트도 하고 좋은거고.
+구직자는 기업의 핵심 가치를, 기업은 인재의 포트폴리오를 카드 형태로 확인하며 빠르고 간편하게 서로의 니즈(Needs)를 파악할 수 있습니다. 양쪽이 모두 'Like'를 보냈을 때 비로소 매칭이 성사되어 대화를 시작할 수 있습니다.
 
-----------------------------------------------------------------------------------------------------------------------------------------
-종속성 체크<p>
-<img width="430" height="292" alt="image" src="https://github.com/user-attachments/assets/0155a552-ac0d-44f8-bacd-2c8a1a690d31" /><p>
-각각의 설명을 해보겠다.<p>
-Spring Web : 모든 요청과 응답의 기본 골자.<p>
-Lombok : DTO쉽게 작성하기<p>
-Spring Boot DevTools : 코드의 핫 스왑용.(수정사항 생겨도 바로 볼수 있게.)<p>
-MySQL Driver : DB와 웹에서의 통신 담당용.<p>
-Validation : 이메일이나 규제가 필요한 칸에서의 규제 담당용.<p>
-Spring Security : 기본적인 보안 담당용(내가 보안코드 짜기에는 내가 보안학과가 아니기에...)<p>
-WebSocket : 매칭 성사후 실시간 채팅 담당용<p>
-Spring Data Redis(Access + Driver) : 비동기 통신 담당용.(DB부하 줄이기)<p>
+### ✨ 주요 기능 (Key Features)
+* **Swipe UI**: 좌우 스와이프를 통해 채용 공고/인재 프로필을 간편하게 탐색
+* **Real-time Matching**: 상호 호감이 확인되는 즉시 매칭 알림 전송
+* **Chatting**: 매칭된 구직자와 채용담당자 간의 실시간 1:1 채팅 기능
+* **Resume/Portfolio**: 간편하게 등록하고 시각적으로 돋보이는 프로필 카드
+<br/>
+
+## 🛠 기술 스택 (Tech Stack)
+
+| 구분 | 기술 (Technology) |
+| :-- | :-- |
+| **Language** | [Python / JAVA] |
+| **Frontend** | [HTML / CSS / JS] |
+| **Backend** | [Spring Boot / Spring Security] |
+| **Database** | [MySQL / Redis] |
+| **Deployment** | (TBD) |
+| **Server** | (TBD) |
+
+<br/>
+
+<br/>
+
+## 🏗 시스템 아키텍처 (System Architecture)
+*(추후 기술 스택 확정 시 아키텍처 다이어그램 이미지 추가 예정)*
+
+<br/>
+
+<br/>
+
+## 📒 개발 일지 (development log)
+*(특별한 일이 없으면 매일 매일 추가)*<p>
+*12월 22일 : https://www.notion.so/12-22-2d1207e0212d806b813acc03b4df4696?source=copy_link*
+<br/>
+<br/>
+
+## 📒 트러블 슈팅 (trouble shooting)
+*(정확한 작성법을 알기 전까지는 개발 일지에 포함)*
+
+<br/>
