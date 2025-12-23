@@ -46,5 +46,5 @@
 <br>
 더 자세한 기획 의도와 요구사항 명세는 아래 문서를 참고해 주세요.
 
-👉 **[소프트웨어 요구사항 명세서 (SRS) 보러 가기](./docs/C_MOA_SRS.md)**
+👉 **[소프트웨어 요구사항 명세서 (SRS) 보러 가기](https://github.com/sorbet0404/CV_MOA/blob/docs/C_MOA_SRS.md)**
 <br/>
