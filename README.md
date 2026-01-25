@@ -21,15 +21,16 @@
 
 ## 🛠 기술 스택 (Tech Stack)
 
+## 🛠 기술 스택 (Tech Stack)
+
 | 구분 | 기술 (Technology) |
 | :-- | :-- |
-| **Language** | Java 17 |
-| **Frontend** | HTML5 / CSS3 / JavaScript (Vanilla) / Thymeleaf / Bootstrap 5 |
-| **Backend** | Spring Boot 3.2 / Spring Security / Spring Data JPA / WebSocket (STOMP) |
-| **Database** | MySQL 8.0 |
-| **Build Tool** | Gradle |
-| **Server** | Tomcat (Spring Boot Embedded) |
-
+| **Language** | ![Java](https://img.shields.io/badge/Java-17-007396?style=flat-square&logo=java&logoColor=white) |
+| **Frontend** | ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat-square&logo=html5&logoColor=white) ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=flat-square&logo=css3&logoColor=white) ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black) ![Thymeleaf](https://img.shields.io/badge/Thymeleaf-005F0F?style=flat-square&logo=thymeleaf&logoColor=white) ![Bootstrap](https://img.shields.io/badge/Bootstrap_5-7952B3?style=flat-square&logo=bootstrap&logoColor=white) |
+| **Backend** | ![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.2-6DB33F?style=flat-square&logo=springboot&logoColor=white) ![Spring Security](https://img.shields.io/badge/Spring_Security-6DB33F?style=flat-square&logo=springsecurity&logoColor=white) ![Spring Data JPA](https://img.shields.io/badge/Spring_Data_JPA-6DB33F?style=flat-square&logo=spring&logoColor=white) ![WebSocket](https://img.shields.io/badge/WebSocket_(STOMP)-010101?style=flat-square&logo=socket.io&logoColor=white) |
+| **Database** | ![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?style=flat-square&logo=mysql&logoColor=white) |
+| **Build Tool** | ![Gradle](https://img.shields.io/badge/Gradle-02303A?style=flat-square&logo=gradle&logoColor=white) |
+| **Server** | ![Tomcat](https://img.shields.io/badge/Apache_Tomcat-F8DC75?style=flat-square&logo=apachetomcat&logoColor=black) |
 <br/>
 
 <br/>
