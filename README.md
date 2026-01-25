@@ -21,8 +21,6 @@
 
 ## 🛠 기술 스택 (Tech Stack)
 
-## 🛠 기술 스택 (Tech Stack)
-
 | 구분 | 기술 (Technology) |
 | :-- | :-- |
 | **Language** | ![Java](https://img.shields.io/badge/Java-17-007396?style=flat-square&logo=java&logoColor=white) |
@@ -31,29 +29,75 @@
 | **Database** | ![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?style=flat-square&logo=mysql&logoColor=white) |
 | **Build Tool** | ![Gradle](https://img.shields.io/badge/Gradle-02303A?style=flat-square&logo=gradle&logoColor=white) |
 | **Server** | ![Tomcat](https://img.shields.io/badge/Apache_Tomcat-F8DC75?style=flat-square&logo=apachetomcat&logoColor=black) |
-<br/>
 
 <br/>
 
 ## 🏗 시스템 아키텍처 (System Architecture)
-*(추후 기술 스택 확정 시 아키텍처 다이어그램 이미지 추가 예정)*
 
-<br/>
+```mermaid
+graph TD
+    %% 스타일 정의 (Brand Colors)
+    classDef client fill:#f9f9f9,stroke:#333,stroke-width:2px;
+    classDef spring fill:#6DB33F,stroke:#333,stroke-width:2px,color:white;
+    classDef db fill:#4479A1,stroke:#333,stroke-width:2px,color:white;
+    classDef infra fill:#e1e1e1,stroke:#333,stroke-width:2px,stroke-dasharray: 5 5;
 
-<br/>
+    %% 1. Client Side
+    subgraph Client [📱 Client Side]
+        User((User))
+        Browser[Mobile/PC Browser]
+        User --> Browser
+    end
 
-## 📒 개발 일지 (development log)
-*(특별한 일이 없으면 매일 매일 추가)*<p>
-*12월 22일 : https://www.notion.so/12-22-2d1207e0212d806b813acc03b4df4696?source=copy_link*
-<br/>
-<br/>
+    %% 2. Server Side
+    subgraph Server [🍃 Spring Boot Server]
+        direction TB
+        Security[Spring Security<br/>Auth/Session]
+        Controller[Controller Layer<br/>Page/API Routing]
+        Service[Service Layer<br/>Business Logic]
+        WebSocket[WebSocket<br/>STOMP Chat]
+    end
 
+    %% 3. Data Layer
+    subgraph Data [💾 Data Infrastructure]
+        DB[(MySQL Database)]
+        FileSys[File System<br/>Uploads]
+    end
+
+    %% Flow Connections
+    Browser -- "HTTP/HTTPS" --> Security
+    Security --> Controller
+    Controller --> Service
+    
+    Browser <== "WS/WSS" ==> WebSocket
+    WebSocket <--> Service
+    
+    Service -- "JPA/Hibernate" --> DB
+    Service -- "I/O" --> FileSys
+    
+    %% Return Path (Thymeleaf SSR)
+    Controller -.->|Thymeleaf View| Browser
+
+    %% 클래스 적용
+    class User,Browser client;
+    class Security,Controller,Service,WebSocket spring;
+    class DB db;
+    class FileSys infra;
+```
 ## 📒 트러블 슈팅 (trouble shooting)
+
 *(정확한 작성법을 알기 전까지는 개발 일지에 포함)*
 
+
+
 <br/>
+
 <br>
+
 더 자세한 기획 의도와 요구사항 명세는 아래 문서를 참고해 주세요.
 
+
+
 👉 **[소프트웨어 요구사항 명세서 (SRS) 보러 가기](https://github.com/sorbet0404/CV_MOA/blob/docs/C_MOA_SRS.md)**
+
 <br/>
