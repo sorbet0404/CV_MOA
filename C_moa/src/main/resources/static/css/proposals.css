@@ -1,0 +1,11 @@
+.proposal-card {
+    border: 1px solid #eee;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px;
+    transition: transform 0.2s;
+}
+
+.proposal-card:hover {
+    transform: translateY(-5px);
+}

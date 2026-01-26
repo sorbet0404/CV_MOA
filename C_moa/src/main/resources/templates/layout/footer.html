@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="footer(currentPage)">
+    <nav class="navbar fixed-bottom py-3" style="pointer-events: none;">
+        <div class="container-fluid d-flex justify-content-center px-3">
+
+            <div style="flex: 1; pointer-events: auto;">
+                <input type="radio" class="btn-check" name="mode-select" id="mode-explore"
+                    th:checked="${currentPage == 'explore'}">
+                <label class="custom-footer-btn btn-explore" for="mode-explore" onclick="changeMode('EXPLORE')">
+                    <i class="fas fa-search me-2"></i> 탐색
+                </label>
+            </div>
+
+            <div style="flex: 1; pointer-events: auto;">
+                <input type="radio" class="btn-check" name="mode-select" id="mode-inbound"
+                    th:checked="${currentPage == 'proposals'}">
+                <label class="custom-footer-btn btn-inbound" for="mode-inbound" onclick="changeMode('INBOUND')">
+                    <i class="fas fa-envelope me-2"></i> 제안함
+                </label>
+            </div>
+
+        </div>
+    </nav>
+
+    <script th:inline="javascript">
+        const userRole = /*[[${userRole}]]*/ 'SEEKER';
+
+        function changeMode(mode) {
+            if (mode === 'EXPLORE') {
+                // 역할에 따라 적절한 탐색 페이지로 이동
+                if (userRole === 'RECRUITER') {
+                    location.href = '/matching/recruiter';
+                } else {
+                    location.href = '/matching';
+                }
+            } else {
+                // 제안함은 공통
+                location.href = '/matching/proposals';
+            }
+        }
+    </script>
+</div>
+
+</html>

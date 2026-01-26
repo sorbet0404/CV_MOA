@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Job Tinder - 받은 제안함</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link th:href="@{/css/main.css}" rel="stylesheet">
+    <link th:href="@{/css/proposals.css}" rel="stylesheet">
+</head>
+
+<body>
+
+    <div th:replace="~{layout/header :: header(mode=${null})}"></div>
+
+    <div class="container mt-5" style="max-width: 800px;">
+        <h2 class="fw-bold mb-4"><i class="fas fa-envelope-open-text me-2"></i>받은 제안함</h2>
+
+        <div th:if="${#lists.isEmpty(proposals)}" class="text-center py-5">
+            <h4 class="text-secondary">아직 도착한 제안이 없습니다. 📭</h4>
+            <p class="text-muted">조금만 더 기다려보세요!</p>
+            <a href="/matching" class="btn btn-primary mt-3">매칭 탐색하러 가기</a>
+        </div>
+
+        <div th:each="p : ${proposals}" class="proposal-card p-4 mb-3 shadow-sm rounded position-relative"
+            th:classappend="${p.isSuperLike} ? 'bg-warning-subtle border-2 border-warning' : 'bg-white'"
+            th:style="${p.isSuperLike} ? 'border: 2px solid #ffc107 !important; background-color: #fffbf0;' : ''">
+
+            <div th:if="${p.isSuperLike}"
+                class="position-absolute top-0 start-50 translate-middle badge rounded-pill bg-danger shadow-sm">
+                <i class="fas fa-star text-warning"></i> SUPER LIKE <i class="fas fa-star text-warning"></i>
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+
+                <!-- 내용 영역 -->
+                <div class="d-flex align-items-center">
+                    <div class="me-3 fs-1 text-primary">
+                        <i class="fas fa-user-circle" th:if="${p.type.name() == 'APPLY'}"></i>
+                        <i class="fas fa-building" th:if="${p.type.name() == 'SCOUT'}"></i>
+                    </div>
+
+                    <div>
+                        <!-- 구직자가 보는 화면 (기업이 보낸 SCOUT) -->
+                        <div th:if="${p.type.name() == 'SCOUT'}">
+                            <h5 class="fw-bold mb-1" th:text="${p.jobPosting.recruiter.companyName}">기업명</h5>
+                            <p class="mb-1 text-dark" th:text="${p.jobPosting.title}">공고 제목</p>
+                            <span class="badge bg-success">스카웃 제안</span>
+                            <small class="text-muted"
+                                th:text="${#temporals.format(p.createdAt, 'yyyy-MM-dd HH:mm')}">날짜</small>
+                        </div>
+
+                        <!-- 기업이 보는 화면 (구직자가 보낸 APPLY) -->
+                        <div th:if="${p.type.name() == 'APPLY'}">
+                            <h5 class="fw-bold mb-1" th:text="${p.seeker.nickname}">구직자 닉네임</h5>
+                            <p class="mb-1 text-dark"
+                                th:text="${p.seeker.position + ' (' + p.seeker.careerYear + '년차)'}">포지션</p>
+                            <span class="badge bg-primary">지원</span>
+                            <small class="text-muted" th:text="${'지원공고: ' + p.jobPosting.title}">공고명</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 수락 버튼 (맞좋아요) -->
+                <div>
+                    <!-- 구직자 수락: targetId = jobId -->
+                    <form th:if="${p.type.name() == 'SCOUT'}" action="/matches/propose" method="post">
+                        <input type="hidden" name="targetId" th:value="${p.jobPosting.id}">
+                        <input type="hidden" name="isLike" value="true">
+                        <button type="submit" class="btn btn-outline-primary fw-bold">
+                            수락하기 (채팅방 개설)
+                        </button>
+                    </form>
+
+                    <!-- 기업 수락: targetId = seekerId, jobId = p.jobPosting.id -->
+                    <form th:if="${p.type.name() == 'APPLY'}" action="/matches/propose" method="post">
+                        <input type="hidden" name="targetId" th:value="${p.seeker.id}">
+                        <input type="hidden" name="jobId" th:value="${p.jobPosting.id}">
+                        <input type="hidden" name="isLike" value="true">
+                        <button type="submit" class="btn btn-outline-primary fw-bold">
+                            수락하기 (채팅방 개설)
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{layout/footer :: footer('proposals')}"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+</html>

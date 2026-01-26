@@ -1,0 +1,9 @@
+package org.cv.moa.domain.user.repository;
+
+import org.cv.moa.domain.user.entity.Seeker;
+import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.Optional;
+
+public interface SeekerRepository extends JpaRepository<Seeker, Long> {
+    Optional<Seeker> findByUserId(Long userId);
+}

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>채용 공고 목록</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+    <!-- header fragment를 쓰고 있다면 그대로 -->
+    <div th:replace="~{layout/header :: header(mode='jobs')}"></div>
+
+    <div class="container mt-5 pt-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 class="fw-bold">채용 공고</h3>
+            <a class="btn btn-primary" href="/jobs/write">공고 등록</a>
+        </div>
+
+        <div th:if="${#lists.isEmpty(jobPostings)}" class="text-muted">
+            등록된 공고가 없습니다.
+        </div>
+
+        <div class="list-group" th:if="${!#lists.isEmpty(jobPostings)}">
+            <div class="list-group-item" th:each="p : ${jobPostings}">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <div class="fw-bold" th:text="${p.title}">제목</div>
+                        <div class="text-muted small" th:text="${p.recruiter != null ? p.recruiter.companyName : ''}">회사
+                        </div>
+                        <div class="text-muted small">
+                            상태: <span th:text="${p.status}">OPEN</span>
+                        </div>
+                    </div>
+
+                    <!-- ✅ 1-D: 수정/취소 버튼 -->
+                    <div class="d-flex gap-2">
+                        <a class="btn btn-sm btn-outline-primary" th:href="@{/jobs/{id}/edit(id=${p.id})}">수정</a>
+
+                        <!-- 마감하기 -->
+                        <form th:if="${p.status == 'OPEN'}" th:action="@{/jobs/{id}/close(id=${p.id})}" method="post">
+                            <button class="btn btn-sm btn-outline-danger" type="submit">
+                                마감하기
+                            </button>
+                        </form>
+
+                        <!-- 다시 열기 -->
+                        <form th:if="${p.status == 'CLOSED'}" th:action="@{/jobs/{id}/reopen(id=${p.id})}"
+                            method="post">
+                            <button class="btn btn-sm btn-success" type="submit">
+                                다시 열기
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <p class="mt-2 mb-0" th:text="${p.description}">설명</p>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>C-MOA 채팅</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link th:href="@{/css/chat.css}" rel="stylesheet">
+</head>
+
+<body>
+
+    <div id="sidebarOverlay" class="overlay" onclick="toggleSidebar()" th:if="${mode != 'profile' and mode != 'jobs'}">
+    </div>
+
+    <div id="mainSidebar" class="sidebar">
+        <div class="sidebar-header">
+            <span class="fw-bold">💬 다른 대화방</span>
+            <button class="btn-close" onclick="toggleSidebar()"></button>
+        </div>
+        <ul class="chat-list">
+            <li class="chat-item"
+                th:onclick="|location.href='@{${session.user.role.name() == 'RECRUITER' ? '/matching/recruiter' : '/matching'}}'|">
+                <div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center"
+                    style="width:40px; height:40px;">
+                    <i class="fas fa-arrow-left"></i>
+                </div>
+                <div class="fw-bold">메인으로</div>
+            </li>
+
+            <li class="chat-item" th:each="other : ${otherRooms}"
+                th:onclick="|location.href='@{/chat/room/{id}(id=${other.id})}'|">
+                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center"
+                    style="width:40px; height:40px;">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <div>
+                    <div class="fw-bold" th:text="${other.match.jobPosting.title}">공고 제목</div>
+                    <small class="text-muted" th:text="${other.match.seeker.nickname}">상대방</small>
+                </div>
+            </li>
+
+            <li class="chat-item" th:if="${#lists.isEmpty(otherRooms)}">
+                <small class="text-muted">다른 채팅방이 없습니다.</small>
+            </li>
+        </ul>
+    </div>
+
+    <div class="chat-container">
+        <div class="chat-header shadow-sm">
+            <div class="d-flex align-items-center">
+                <button class="btn btn-light rounded-circle me-2" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div>
+                    <h5 class="fw-bold mb-0" th:text="${room.match.jobPosting.title}">공고 제목</h5>
+                    <small class="text-success">● 온라인</small>
+                </div>
+            </div>
+
+            <form th:action="@{/chat/room/{id}/leave(id=${room.id})}" method="post"
+                onsubmit="return confirm('정말 이 채팅방을 나가시겠습니까? 대화 내용이 삭제됩니다.');" style="margin: 0;">
+                <button type="submit" class="btn btn-outline-danger btn-sm">나가기</button>
+            </form>
+        </div>
+
+        <div class="message-area" id="messageArea">
+            <div th:if="${#lists.isEmpty(messages)}" style="text-align: center; color: gray; margin-top: 20px;">
+                <p>🎉 대화가 시작되었습니다!</p>
+            </div>
+
+            <!-- 이전 대화 내용 렌더링 -->
+            <div th:each="msg : ${messages}"
+                th:classappend="${msg.sender.id == session.user.id} ? 'message-right' : 'message-left'"
+                class="message-bubble" th:text="${msg.message}">
+                메시지 내용
+            </div>
+        </div>
+
+        <div class="input-area">
+            <!-- 마감된 공고일 경우 파일 업로드 비활성화 -->
+            <label for="fileInput" class="file-upload-label" th:classappend="${isClosed} ? 'disabled' : ''">
+                <i class="fas fa-paperclip"></i>
+            </label>
+            <input type="file" id="fileInput" accept="image/*,.pdf" style="display: none;" th:disabled="${isClosed}">
+
+            <textarea class="form-control" id="messageInput"
+                th:placeholder="${isClosed} ? '기한 또는 공고가 끝났어요!' : '메시지를 입력하세요...'" rows="1"
+                th:disabled="${isClosed}"></textarea>
+
+            <button class="btn btn-primary rounded-circle" onclick="sendMessage()"
+                style="width: 45px; height: 45px; background: linear-gradient(to right, #fd297b, #ff655b); border:none;"
+                th:disabled="${isClosed}">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        const roomId = [[${ room.id }]];
+
+        function toggleSidebar() {
+            document.getElementById('mainSidebar').classList.toggle('open');
+            document.getElementById('sidebarOverlay').classList.toggle('show');
+        }
+
+        // 초기 스크롤 하단 이동
+        window.onload = function () {
+            const messageArea = document.getElementById('messageArea');
+            messageArea.scrollTop = messageArea.scrollHeight;
+        }
+
+        // 메시지 전송 (서버 저장 & 화면 추가)
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const text = input.value.trim();
+            if (!text) return;
+
+            // 1. 서버 전송
+            fetch(`/chat/room/${roomId}/message`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ message: text })
+            })
+                .then(response => {
+                    if (response.ok) {
+                        // 2. 성공 시 화면에 내 말풍선 추가
+                        const messageArea = document.getElementById('messageArea');
+                        const div = document.createElement('div');
+                        div.className = 'message-bubble message-right';
+                        div.innerText = text;
+                        messageArea.appendChild(div);
+
+                        input.value = '';
+                        messageArea.scrollTop = messageArea.scrollHeight;
+                    } else {
+                        alert("메시지 전송 실패");
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert("서버 통신 오류");
+                });
+        }
+
+        // 엔터키 전송
+        document.getElementById('messageInput').addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+    </script>
+
+</body>
+
+</html>

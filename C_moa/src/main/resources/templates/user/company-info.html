@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>회사 정보 관리</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link th:href="@{/css/main.css}" rel="stylesheet">
+    <script th:inline="javascript">
+        let isChanged = false;
+
+        document.addEventListener("DOMContentLoaded", function () {
+            // 변경 감지
+            const inputs = document.querySelectorAll('input, textarea');
+            inputs.forEach(input => {
+                input.addEventListener('change', () => isChanged = true);
+            });
+
+            // 링크 이동 시 확인
+            const links = document.querySelectorAll('a');
+            links.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    if (isChanged && !confirm('아직 저장하지 못한 정보가 존재합니다. 돌아가시겠습니까?')) {
+                        e.preventDefault();
+                    }
+                });
+            });
+        });
+
+        function saveCompanyInfo() {
+            const data = {
+                companyName: document.getElementById('companyName').value,
+                industry: document.getElementById('industry').value,
+                rating: parseFloat(document.getElementById('rating').value),
+                companyDesc: document.getElementById('companyDesc').value,
+                companyPros: document.getElementById('companyPros').value,
+                companyCons: document.getElementById('companyCons').value,
+                companyLogoUrl: document.getElementById('companyLogoUrl').value
+            };
+
+            fetch('/api/users/recruiters/company-info', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            })
+                .then(res => {
+                    if (res.ok) {
+                        alert('회사 정보가 수정되었습니다.');
+                        isChanged = false;
+                        // 수정 후 리크루터 메인으로 이동 (또는 현재 페이지 유지)
+                        window.location.href = '/matching/recruiter';
+                    } else {
+                        return res.text().then(text => alert(text));
+                    }
+                })
+                .catch(err => alert('오류가 발생했습니다: ' + err));
+        }
+
+        function updateLogoPreview() {
+            const url = document.getElementById('companyLogoUrl').value;
+            const preview = document.getElementById('logoPreview');
+            if (url) {
+                preview.src = url;
+            } else {
+                // 기본 아이콘 (FontAwesome) 보여주거나 placeholder 이미지
+                preview.src = 'https://via.placeholder.com/150?text=LOGO';
+            }
+        }
+    </script>
+</head>
+
+<!-- 스크롤 가능하게 스타일 적용 -->
+
+<body class="bg-light" style="overflow-y: auto !important; height: auto !important;">
+
+    <!-- mode는 컨트롤러에서 넘겨준 값 사용 -->
+    <div th:replace="~{layout/header :: header(mode=${mode})}"></div>
+
+    <div class="container mt-5 mb-5 pb-5">
+        <div class="row justify-content-center">
+            <div class="col-md-9 col-lg-8">
+                <div class="card shadow-sm border-0 rounded-4">
+                    <div class="card-body p-5">
+                        <div class="d-flex justify-content-between align-items-center mb-5">
+                            <h3 class="fw-bold mb-0">회사 정보 관리 🏢</h3>
+                        </div>
+
+                        <!-- 상단 분할 레이아웃 (로고 vs 정보) -->
+                        <div class="row mb-4 align-items-center">
+
+                            <!-- 왼쪽: 로고 (청록색 영역 역할) -->
+                            <div class="col-md-4 text-center mb-3 mb-md-0">
+
+                                <!-- 드래그 앤 드롭 영역 -->
+                                <div id="dropZone"
+                                    class="mb-3 position-relative d-flex justify-content-center align-items-center"
+                                    style="width: 150px; height: 150px; border-radius: 20px; overflow: hidden; margin: 0 auto; cursor: pointer; border: 2px dashed #ccc; transition: all 0.3s;">
+
+                                    <!-- 미리보기 이미지 -->
+                                    <img id="logoPreview"
+                                        th:src="${recruiter.companyLogoUrl != null ? recruiter.companyLogoUrl : 'https://via.placeholder.com/150?text=LOGO'}"
+                                        style="width: 100%; height: 100%; object-fit: cover; display: block;">
+
+                                    <!-- 호버/안내 텍스트 (항상 떠있는게 아니라 호버시나 이미지가 없을때) -->
+                                    <div id="dropZoneText"
+                                        class="position-absolute w-100 h-100 d-flex justify-content-center align-items-center flex-column text-white"
+                                        style="background: rgba(0,0,0,0.5); opacity: 0; transition: opacity 0.3s; top: 0; left: 0;">
+                                        <i class="fas fa-camera fa-2x mb-2"></i>
+                                        <span class="small fw-bold">클릭 or 드래그</span>
+                                    </div>
+                                </div>
+
+                                <!-- 실제 파일 인풋 (숨김) -->
+                                <input type="file" id="fileInput" accept="image/*" style="display: none;">
+
+                                <!-- DB 저장용 URL (숨김) -->
+                                <input type="hidden" id="companyLogoUrl" th:value="${recruiter.companyLogoUrl}">
+
+                                <p class="text-muted small mt-2 mb-0">이미지를 드래그하거나 클릭하여 변경하세요</p>
+                            </div>
+
+                            <!-- 오른쪽: 정보 필드 (보라색 영역 역할) -->
+                            <div class="col-md-8">
+                                <!-- 회사명 -->
+                                <div class="mb-3">
+                                    <label for="companyName" class="form-label fw-bold">회사명</label>
+                                    <input type="text" class="form-control" id="companyName" placeholder="회사명 입력"
+                                        th:value="${recruiter.companyName}">
+                                </div>
+
+                                <!-- 산업군 -->
+                                <div class="mb-3">
+                                    <label for="industry" class="form-label fw-bold">산업군 (최대 2개)</label>
+                                    <input type="text" class="form-control" id="industry" name="industry"
+                                        placeholder="선택 또는 입력" th:value="${recruiter.industry}">
+                                </div>
+
+                                <!-- 평점 -->
+                                <div class="mb-3">
+                                    <label for="rating" class="form-label fw-bold">평점 (0.0 ~ 5.0)</label>
+                                    <input type="number" class="form-control" id="rating" step="0.1" min="0" max="5"
+                                        placeholder="0.0"
+                                        th:value="${recruiter.rating != null ? recruiter.rating : 0.0}">
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <!-- 회사 소개 -->
+                        <div class="mb-3">
+                            <label for="companyDesc" class="form-label fw-bold">회사 소개</label>
+                            <textarea class="form-control" id="companyDesc" rows="4" placeholder="우리 회사를 자유롭게 소개해주세요."
+                                th:text="${recruiter.companyDesc}"></textarea>
+                        </div>
+
+                        <!-- 장점 -->
+                        <div class="mb-3">
+                            <label for="companyPros" class="form-label fw-bold text-primary">👍 우리 회사의 장점</label>
+                            <textarea class="form-control" id="companyPros" rows="3" placeholder="예: 자유로운 연차 사용, 재택근무"
+                                th:text="${recruiter.companyPros}"></textarea>
+                        </div>
+
+                        <!-- 단점 -->
+                        <div class="mb-4">
+                            <label for="companyCons" class="form-label fw-bold text-danger">👎 솔직한 단점 (또는 바라는 점)</label>
+                            <textarea class="form-control" id="companyCons" rows="3" placeholder="예: 야근이 조금 있을 수 있음"
+                                th:text="${recruiter.companyCons}"></textarea>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button onclick="saveCompanyInfo()" class="btn text-white fw-bold py-2"
+                                style="background: linear-gradient(to right, #4facfe, #00f2fe); border:none;">
+                                정보 저장하기
+                            </button>
+                            <a href="/matching/recruiter" class="btn btn-outline-secondary py-2 mt-2">돌아가기</a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tagify CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.polyfills.min.js"></script>
+
+    <script>
+        // Tagify 설정
+        var input = document.querySelector('input[name=industry]');
+        var tagify = new Tagify(input, {
+            maxTags: 2, // 최대 2개
+            whitelist: ["IT", "금융", "서비스", "제조", "교육", "의료", "유통", "건설", "게임", "미디어", "통신", "컨설팅"],
+            dropdown: {
+                maxItems: 20,           // 드롭다운 항목 수
+                classname: "tags-look", // 커스텀 클래스
+                enabled: 0,             // 0: 언제나 드롭다운 보임
+                closeOnSelect: false    // 선택 후 드롭다운 닫지 않음
+            }
+        });
+
+        // --- 드래그 앤 드롭 & 파일 업로드 로직 ---
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const dropZoneText = document.getElementById('dropZoneText');
+        const logoPreview = document.getElementById('logoPreview');
+        const logoUrlInput = document.getElementById('companyLogoUrl');
+
+        // 클릭 시 파일 선택창 열기
+        dropZone.addEventListener('click', () => fileInput.click());
+
+        // 마우스 호버 효과
+        dropZone.addEventListener('mouseenter', () => dropZoneText.style.opacity = '1');
+        dropZone.addEventListener('mouseleave', () => dropZoneText.style.opacity = '0');
+
+        // 드래그 이벤트 처리
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.style.border = '2px dashed #4facfe'; // 활성화 색상
+            dropZoneText.style.opacity = '1';
+        });
+
+        dropZone.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            dropZone.style.border = '2px dashed #ccc'; // 기본 색상
+            dropZoneText.style.opacity = '0';
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.style.border = '2px dashed #ccc';
+
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFileUpload(files[0]);
+            }
+        });
+
+        // 파일 인풋 변경 시
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFileUpload(e.target.files[0]);
+            }
+        });
+
+        function handleFileUpload(file) {
+            // 이미지 파일 검증
+            if (!file.type.startsWith('image/')) {
+                alert('이미지 파일만 업로드 가능합니다.');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            // 업로드 중 표시 (선택 사항)
+            dropZoneText.innerHTML = '<i class="fas fa-spinner fa-spin fa-2x"></i>';
+            dropZoneText.style.opacity = '1';
+
+            fetch('/api/files/upload', {
+                method: 'POST',
+                body: formData
+            })
+                .then(res => {
+                    if (!res.ok) throw new Error('Upload failed');
+                    return res.text(); // URL 반환됨 (예: /uploads/abc.jpg)
+                })
+                .then(url => {
+                    // 성공 시 UI 업데이트
+                    logoPreview.src = url;
+                    logoUrlInput.value = url; // Hidden Input에 저장
+
+                    // 텍스트 원래대로 복구
+                    dropZoneText.innerHTML = '<i class="fas fa-camera fa-2x mb-2"></i><span class="small fw-bold">클릭 or 드래그</span>';
+                    dropZoneText.style.opacity = '0';
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert('이미지 업로드에 실패했습니다.');
+                    dropZoneText.innerHTML = '<i class="fas fa-exclamation-triangle fa-2x text-danger"></i>';
+                });
+        }
+    </script>
+
+</body>
+
+</html>

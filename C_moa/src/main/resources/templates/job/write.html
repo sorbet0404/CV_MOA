@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>채용 공고 등록</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+    <div th:replace="~{layout/header :: header(mode='jobs')}"></div>
+
+    <div class="container mt-5 pt-4">
+        <div class="card shadow-sm border-0 rounded-4 mx-auto" style="max-width: 700px;">
+            <div class="card-body p-4">
+                <h3 class="fw-bold mb-4 text-center">📢 채용 공고 등록</h3>
+
+                <form method="post" action="/jobs/write">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">제목</label>
+                        <input name="title" class="form-control" required>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label class="form-label fw-bold">공고 시작일</label>
+                            <input type="date" name="startDate" class="form-control" required>
+                        </div>
+                        <div class="col">
+                            <label class="form-label fw-bold">공고 마감일</label>
+                            <input type="datetime-local" name="endDate" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">설명</label>
+                        <textarea name="description" class="form-control" rows="4" required></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">자격요건</label>
+                        <input id="requirements" name="requirements" class="form-control" placeholder="엔터나 콤마로 태그 입력">
+                    </div>
+
+                    <!-- [복구] 우대사항 (자동 추천 없음) -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">우대사항</label>
+                        <input id="preferences" name="preferences" class="form-control" placeholder="엔터나 콤마로 태그 입력">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">기술스택</label>
+                        <input id="techStacks" name="techStacks" class="form-control"
+                            placeholder="예: Java, Spring, MySQL">
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <a class="btn btn-outline-secondary" href="/jobs/list">취소</a>
+                        <button class="btn btn-primary" type="submit">등록</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Tagify CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.polyfills.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // 기술스택 Tagify
+            var techInput = document.getElementById('techStacks');
+            if (techInput) {
+                new Tagify(techInput, {
+                    delimiters: ",",
+                    whitelist: ["Java", "Spring", "Spring Boot", "JPA", "MySQL", "React", "Vue", "JavaScript", "TypeScript", "Python", "Docker", "AWS", "Kubernetes"],
+                    dropdown: {
+                        position: "input",
+                        enabled: 0
+                    }
+                });
+            }
+
+            // 자격요건 Tagify
+            var reqInput = document.getElementById('requirements');
+            if (reqInput) {
+                new Tagify(reqInput, {
+                    delimiters: ",",
+                    whitelist: ["신입가능", "경력직(1년 이상)", "경력(3년 이상)", "경력(5년 이상)", "경력(7년 이상)", "커뮤니케이션 능력", "문제해결 능력"],
+                    dropdown: {
+                        position: "input",
+                        enabled: 0
+                    }
+                });
+            }
+
+            // 우대사항 Tagify (자유 입력)
+            var prefInput = document.getElementById('preferences');
+            if (prefInput) {
+                new Tagify(prefInput); // 기본 설정 사용 (가장 안정적)
+            }
+        });
+    </script>
+</body>
+
+</html>

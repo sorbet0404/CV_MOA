@@ -1,0 +1,281 @@
+/* 1. 기본 레이아웃 */
+body {
+    background-color: #f8f9fa;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 2. 카드 컨테이너 (3D 효과 및 위치 보정) */
+.card-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    perspective: 1000px;
+    z-index: 1;
+
+    /* [위치 보정] 헤더에 가리지 않고 시각적 중앙에 오도록 위쪽 여백 추가 */
+    padding-top: 20px;
+
+    /* 하단 푸터와 겹치지 않도록 여백 확보 */
+    padding-bottom: 80px;
+}
+
+/* 3. 틴더 카드 본체 */
+.tinder-card {
+    width: 350px;
+    height: 540px;
+    position: absolute;
+    transform-style: preserve-3d;
+    transition: transform 0.3s ease-out;
+    cursor: grab;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    border-radius: 20px;
+    background: white;
+}
+
+/* 4. 카드 앞/뒤 공통 */
+.card-face {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    border-radius: 20px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 5. 앞면 디자인 */
+.card-front {
+    z-index: 2;
+    background: white;
+    transform: rotateY(0deg);
+}
+
+.card-img-top {
+    height: 50%;
+    background-color: #333;
+    /* 기본: 구직자용(기업카드) 색상 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 3rem;
+}
+
+/* [추가] 채용 담당자용 파란색 배경 */
+.card-img-top.recruiter-bg {
+    background-color: #4a90e2;
+}
+
+.card-info {
+    padding: 25px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+}
+
+/* 6. 뒷면 디자인 */
+.card-back {
+    transform: rotateY(180deg);
+    z-index: 1;
+    background: #fff0f5;
+    /* 기본: 분홍빛 */
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* [추가] 채용 담당자용 뒷면 배경 (푸른빛) */
+.card-back.recruiter-bg {
+    background: #f0f8ff;
+}
+
+/* 7. 애니메이션 클래스 */
+.is-flipped {
+    transform: rotateY(180deg);
+}
+
+.fly-left {
+    transform: translate(-1000px, 100px) rotate(-30deg) !important;
+    transition: 0.8s !important;
+    opacity: 0;
+}
+
+.fly-right {
+    transform: translate(1000px, 100px) rotate(30deg) !important;
+    transition: 0.8s !important;
+    opacity: 0;
+}
+
+/* 8. 리스트 스타일 */
+.pros-cons-list {
+    list-style-type: none;
+    padding-left: 0;
+    margin-bottom: 0;
+}
+
+.pros-cons-list li {
+    position: relative;
+    padding-left: 20px;
+    margin-bottom: 4px;
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+.pros-cons-list li::before {
+    content: '•';
+    position: absolute;
+    left: 5px;
+    color: #adb5bd;
+}
+
+/* --------------------------------------------------- */
+/* [신규 추가] Footer 그라데이션 버튼 디자인 */
+/* --------------------------------------------------- */
+
+/* 라디오 버튼(input) 숨김 */
+.btn-check {
+    display: none;
+}
+
+/* 라디오 라벨(버튼 모양) 커스텀 */
+.custom-footer-btn {
+    width: 90%;
+    padding: 15px 0;
+    border-radius: 30px;
+    /* 둥근 모서리 */
+    border: none;
+    color: white !important;
+    font-weight: bold;
+    font-size: 1.1rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    margin: 0 auto;
+    /* 버튼 사이 간격 */
+    cursor: pointer;
+}
+
+/* 왼쪽: 탐색 버튼 그라데이션 (주황~자주) */
+.btn-explore {
+    background: linear-gradient(to right, #FF512F, #DD2476);
+}
+
+/* 오른쪽: 받은 제안 버튼 그라데이션 (보라~파랑) */
+.btn-inbound {
+    background: linear-gradient(to right, #8E2DE2, #4A00E0);
+    opacity: 0.6;
+    /* 선택 안 됐을 땐 흐리게 */
+}
+
+/* 선택된 상태 스타일 */
+.btn-check:checked+.custom-footer-btn {
+    opacity: 1;
+    transform: scale(1.05);
+    /* 강조 효과 */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* 선택 안 된 상태 */
+.btn-check:not(:checked)+.custom-footer-btn {
+    opacity: 0.5;
+    filter: grayscale(30%);
+}
+
+
+/* --------------------------------------------------- */
+/* [신규 추가] 사이드바 (Sidebar) 스타일 */
+/* --------------------------------------------------- */
+.sidebar {
+    height: 100%;
+    width: 280px;
+    position: fixed;
+    z-index: 2000;
+    /* 헤더(1030)보다 위에 */
+    top: 0;
+    left: -280px;
+    /* 화면 밖으로 숨김 */
+    background-color: #ffffff;
+    overflow-x: hidden;
+    transition: 0.3s;
+    /* 슬라이드 애니메이션 */
+    padding-top: 60px;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar.open {
+    left: 0;
+    /* 화면 안으로 진입 */
+}
+
+.sidebar-header {
+    padding: 20px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border-bottom: 1px solid #eee;
+    background: #f8f9fa;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chat-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.chat-item {
+    padding: 15px 20px;
+    border-bottom: 1px solid #f1f1f1;
+    cursor: pointer;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.chat-item:hover {
+    background-color: #fff0f5;
+    /* 호버 시 연한 분홍 */
+}
+
+.chat-avatar {
+    width: 40px;
+    height: 40px;
+    background-color: #ddd;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+}
+
+/* 사이드바 열렸을 때 배경 어둡게 (Overlay) */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1999;
+    /* 사이드바 바로 아래 */
+    display: none;
+}
+
+.overlay.show {
+    display: block;
+}

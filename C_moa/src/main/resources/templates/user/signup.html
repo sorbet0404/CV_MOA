@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Job Tinder - 회원가입</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link th:href="@{/css/auth.css}" rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="signup-card">
+        <h2 class="text-center mb-4 fw-bold" style="color: #fd297b;">회원가입 🔥</h2>
+
+        <div class="mb-3">
+            <label for="email" class="form-label">이메일</label>
+            <input type="email" class="form-control" id="email" placeholder="name@example.com">
+        </div>
+
+        <div class="mb-3">
+            <label for="password" class="form-label">비밀번호</label>
+            <input type="password" class="form-control" id="password" placeholder="비밀번호">
+        </div>
+
+        <div class="mb-3">
+            <label for="name" class="form-label">이름</label>
+            <input type="text" class="form-control" id="name" placeholder="실명 또는 닉네임">
+        </div>
+
+        <div class="mb-3">
+            <label for="role" class="form-label">가입 유형</label>
+            <select class="form-select" id="role" onchange="toggleCompanyCode()">
+                <option value="SEEKER" selected>구직자 (일자리를 찾아요)</option>
+                <option value="RECRUITER">채용 담당자 (인재를 찾아요)</option>
+            </select>
+        </div>
+
+        <div class="mb-3 hidden" id="companyCodeGroup">
+            <label for="companyCode" class="form-label fw-bold text-danger">기업 인증 코드 (6자리)</label>
+            <input type="text" class="form-control" id="companyCode" maxlength="6" placeholder="코드 6자리를 입력하세요">
+            <div class="form-text">채용 담당자는 기업 인증이 필수입니다.</div>
+        </div>
+
+        <div class="mb-4">
+            <label for="intro" class="form-label">한 줄 소개</label>
+            <input type="text" class="form-control" id="intro" placeholder="자신을 표현하는 짧은 문장">
+        </div>
+
+        <button onclick="signup()" class="btn w-100 py-2 fs-5 fw-bold text-white"
+            style="background: linear-gradient(to right, #fd297b, #ff655b); border:none;">가입하기</button>
+    </div>
+
+    <script>
+        function toggleCompanyCode() {
+            const role = document.getElementById('role').value;
+            const codeGroup = document.getElementById('companyCodeGroup');
+            const codeInput = document.getElementById('companyCode');
+
+            if (role === 'RECRUITER') {
+                codeGroup.classList.remove('hidden');
+            } else {
+                codeGroup.classList.add('hidden');
+                codeInput.value = ''; // 구직자로 바꾸면 입력값 초기화
+            }
+        }
+
+        function signup() {
+            const email = document.getElementById('email').value;
+            const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i;
+
+            if (!emailPattern.test(email)) {
+                alert("올바른 이메일 형식이 아닙니다.");
+                return;
+            }
+
+            const role = document.getElementById('role').value;
+            const companyCode = document.getElementById('companyCode').value;
+
+            // [수정된 부분] 채용 담당자 검증 로직 강화
+            if (role === 'RECRUITER') {
+                if (!companyCode) {
+                    alert("채용 담당자는 기업 인증 코드를 입력해야 합니다.");
+                    return;
+                }
+                // ★ 정확히 6글자인지 확인
+                if (companyCode.length !== 6) {
+                    alert("기업 인증 코드는 정확히 6자리여야 합니다. (현재 " + companyCode.length + "자리)");
+                    return;
+                }
+            }
+
+            const data = {
+                email: email,
+                password: document.getElementById('password').value,
+                name: document.getElementById('name').value,
+                role: role,
+                companyCode: companyCode,
+                intro: document.getElementById('intro').value
+            };
+
+            fetch('/api/users/signup', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            })
+                .then(response => {
+                    if (response.ok) return response.text();
+                    throw new Error('가입 실패');
+                })
+                .then(message => {
+                    alert("회원가입 성공! 로그인 페이지로 이동합니다.");
+                    window.location.href = '/login';
+                })
+                .catch(error => {
+                    alert("회원가입 실패: 정보를 확인해주세요.");
+                    console.error(error);
+                });
+        }
+    </script>
+
+</body>
+
+</html>
