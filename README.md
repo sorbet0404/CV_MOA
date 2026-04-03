@@ -6,9 +6,6 @@
 
 구직자는 기업의 핵심 가치를, 기업은 인재의 포트폴리오를 카드 형태로 확인하며 빠르고 간편하게 서로의 니즈(Needs)를 파악할 수 있습니다. 양쪽이 모두 'Like'를 보냈을 때 비로소 매칭이 성사되어 대화를 시작할 수 있습니다.
 
-![Swiper UI Preview](https://via.placeholder.com/800x400.png?text=C-MOA+Swipe+UI+Preview)
-*(여기에 실제 스크린샷을 넣으세요)*
-
 ### ✨ 주요 기능 (Key Features)
 * **Swipe UI**: 좌우 스와이프를 통해 채용 공고/인재 프로필을 간편하게 탐색 (CSS 3D Animation 적용)
 * **Super Like**: 100 포인트를 소모하여 상대방에게 강력한 호감을 표시하고, 매칭 확률을 높임
