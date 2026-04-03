@@ -84,15 +84,6 @@ graph TD
     class DB db;
     class FileSys infra;
 ```
-## 📒 트러블 슈팅 (trouble shooting)
-
-*(정확한 작성법을 알기 전까지는 개발 일지에 포함)*
-
-
-
-<br/>
-
-<br>
 
 더 자세한 기획 의도와 요구사항 명세는 아래 문서를 참고해 주세요.
 
